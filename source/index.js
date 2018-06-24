@@ -1,24 +1,11 @@
 // Core
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
 // Theme
-import './theme/init';
+import "./theme/init";
 
-const start = (
-    <div
-        style = { {
-            display:         'flex',
-            justifyContent:  'center',
-            alignItems:      'center',
-            minHeight:       '100vh',
-            backgroundColor: 'slateblue',
-            color:           'white',
-            fontSize:        24,
-            fontWeight:      '600',
-        } }>
-        Интенсив по React: стартовая точка
-    </div>
-);
+// Components
+import App from "./pages/App";
 
-ReactDOM.render(start, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById("app"));
