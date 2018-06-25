@@ -10,36 +10,34 @@ import { Consumer } from "hoc/withProfile";
 
 export default class Composer extends Component {
     static propTypes = {
-        createPost: func.isRequired,
+        _createPost: func.isRequired,
     };
-
-    constructor () {
-        super();
-        this.handleUpdate = ::this._handleUpdate;
-        this.handleSubmit = ::this._handleSubmit;
-    }
 
     state = {
         comment: "",
     };
 
-    _handleUpdate (e) {
-        const { value: comment } = e.target;
-
-        this.setState({ comment });
-    }
-
-    _handleSubmit (e) {
-        e.preventDefault();
+    _submitComment = () => {
         const { comment } = this.state;
 
         if (!comment) {
-            return;
+            return null;
         }
 
-        this.props.createPost(comment);
+        this.props._createPost(comment);
         this.setState({ comment: "" });
-    }
+    };
+
+    _handleUpdateComment = (e) => {
+        const { value: comment } = e.target;
+
+        this.setState({ comment });
+    };
+
+    _handleFormSubmit = (e) => {
+        e.preventDefault();
+        this._submitComment();
+    };
 
     render () {
         const { comment } = this.state;
@@ -49,11 +47,11 @@ export default class Composer extends Component {
                 {({ avatar, currentUserFirstName }) => (
                     <section className = { Styles.composer }>
                         <img src = { avatar } />
-                        <form onSubmit = { this.handleSubmit }>
+                        <form onSubmit = { this._handleFormSubmit }>
                             <textarea
                                 placeholder = { `What is in you mind ${currentUserFirstName}` }
                                 value = { comment }
-                                onChange = { this.handleUpdate }
+                                onChange = { this._handleUpdateComment }
                             />
                             <input type = 'submit' valuse = 'Post' />
                         </form>
