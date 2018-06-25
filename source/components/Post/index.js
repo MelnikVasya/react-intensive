@@ -1,35 +1,31 @@
 // Core
 import React, { Component } from "react";
-import { string, func } from "prop-types";
+import { string, func, number } from "prop-types";
 
 // Instruments
 import Styles from "./styles.m.css";
+import moment from "moment";
 
 // Components
 import { withProfile } from "hoc/withProfile";
 
 export class Post extends Component {
     static propTypes = {
-        _id:                  string.isRequired,
-        avatar:               string.isRequired,
-        comment:              string.isRequired,
-        currentUserFirstName: string.isRequired,
-        currentUserLastName:  string.isRequired,
-        destroyPost:          func.isRequired,
+        avatar:      string.isRequired,
+        comment:     string.isRequired,
+        created:     number.isRequired,
+        destroyPost: func.isRequired,
+        firstName:   string.isRequired,
+        id:          string.isRequired,
+        lastName:    string.isRequired,
     };
 
     _handleDestroyPost = () => {
-        this.props.destroyPost(this.props._id);
+        this.props.destroyPost(this.props.id);
     };
 
     render () {
-        const {
-            comment,
-            avatar,
-            currentUserFirstName,
-            currentUserLastName,
-            time,
-        } = this.props;
+        const { comment, avatar, firstName, lastName, created } = this.props;
 
         return (
             <section className = { Styles.post }>
@@ -38,8 +34,8 @@ export class Post extends Component {
                     onClick = { this._handleDestroyPost }
                 />
                 <img src = { avatar } />
-                <a>{`${currentUserFirstName} ${currentUserLastName}`}</a>
-                <time>{time.format("MMMM Do YYYY, h:mm:ss a")}</time>
+                <a>{`${firstName} ${lastName}`}</a>
+                <time>{moment(created).format("MMMM Do YYYY, h:mm:ss a")}</time>
                 <p>{comment}</p>
             </section>
         );

@@ -3,46 +3,75 @@ import React, { Component } from "react";
 
 // Instruments
 import Styles from "./styles.m.css";
-import { getUniqueID } from "instruments";
-import moment from "moment";
+import api from "REST/api";
 
 // Components
 import Composer from "components/Composer";
 import Post from "components/Post";
 import StatusBar from "components/StatusBar";
 import Counter from "components/Counter";
+import Spinner from "components/Spinner";
 
 export default class Feed extends Component {
     state = {
         postsData: [],
+        isSpining: false,
     };
 
-    _createPost = (comment) => {
-        this.setState(({ postsData }) => ({
-            postsData: [
-                { comment, _id: getUniqueID(), time: moment() },
-                ...postsData
-            ],
-        }));
+    componentDidMount () {
+        this._fetchPostsAsync();
+    }
+
+    _setPostFetchingState = (isSpining) => {
+        this.setState({ isSpining });
     };
 
-    _destroyPost = (postId) => {
+    _fetchPostsAsync = async () => {
+        try {
+            this._setPostFetchingState(true);
+            const postsData = await api.fetchPosts();
+
+            this.setState({ postsData });
+        } catch ({ message }) {
+            console.error(message);
+        } finally {
+            this._setPostFetchingState(false);
+        }
+    };
+
+    _createPostAsync = async (comment) => {
+        try {
+            this._setPostFetchingState(true);
+            const post = await api.createPost(comment);
+
+            this.setState(({ postsData }) => ({
+                postsData: [post, ...postsData],
+            }));
+        } catch ({ message }) {
+            console.error(message);
+        } finally {
+            this._setPostFetchingState(false);
+        }
+    };
+
+    _destroyPostAsync = (postId) => {
         this.setState(({ postsData }) => ({
-            postsData: postsData.filter((post) => post._id !== postId),
+            postsData: postsData.filter((post) => post.id !== postId),
         }));
     };
 
     render () {
-        const { postsData } = this.state;
+        const { postsData, isSpining } = this.state;
 
         const posts = postsData.map((post) => (
-            <Post { ...post } destroyPost = { this._destroyPost } key = { post._id } />
+            <Post { ...post } destroyPost = { this._destroyPost } key = { post.id } />
         ));
 
         return (
             <section className = { Styles.feed }>
                 <StatusBar />
-                <Composer _createPost = { this._createPost } />
+                <Spinner isSpining = { isSpining } />
+                <Composer _createPostAsync = { this._createPostAsync } />
                 <Counter postCount = { postsData.length } />
                 {posts}
             </section>

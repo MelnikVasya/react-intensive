@@ -10,7 +10,7 @@ import { withProfile } from "hoc/withProfile";
 
 export class Composer extends Component {
     static propTypes = {
-        _createPost:          func.isRequired,
+        _createPostAsync:     func.isRequired,
         avatar:               string.isRequired,
         currentUserFirstName: string.isRequired,
     };
@@ -26,7 +26,7 @@ export class Composer extends Component {
             return null;
         }
 
-        this.props._createPost(comment);
+        this.props._createPostAsync(comment);
         this.setState({ comment: "" });
     };
 
@@ -37,6 +37,19 @@ export class Composer extends Component {
     };
 
     _handleFormSubmit = (e) => {
+        e.preventDefault();
+        this._submitComment();
+    };
+
+    _preventCopyText = (e) => {
+        e.preventDefault();
+    };
+
+    _handleSubmitOnEnter = (e) => {
+        if (e.key !== "Enter") {
+            return null;
+        }
+
         e.preventDefault();
         this._submitComment();
     };
@@ -53,6 +66,8 @@ export class Composer extends Component {
                         placeholder = { `What is in you mind ${currentUserFirstName}` }
                         value = { comment }
                         onChange = { this._handleUpdateComment }
+                        onCopy = { this._preventCopyText }
+                        onKeyDown = { this._handleSubmitOnEnter }
                     />
                     <input type = 'submit' valuse = 'Post' />
                 </form>
