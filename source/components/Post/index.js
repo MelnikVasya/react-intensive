@@ -18,7 +18,7 @@ export default class Post extends Component {
                         <img src = { avatar } />
                         <a>{`${currentUserFirstName} ${currentUserLastName}`}</a>
                         <time>{moment().format("LLL")}</time>
-                        <p>Lorem ipsum dolor sit amet</p>
+                        <p>{this.props.comment}</p>
                     </section>
                 )}
             </Consumer>
