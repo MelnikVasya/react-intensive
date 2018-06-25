@@ -38,7 +38,7 @@ export default class Feed extends Component {
             <section className = { Styles.feed }>
                 <StatusBar />
                 <Composer _createPost = { this._createPost } />
-                { posts }
+                {posts}
             </section>
         );
     }

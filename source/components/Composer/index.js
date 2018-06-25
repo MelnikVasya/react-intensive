@@ -1,16 +1,18 @@
 // Core
 import React, { Component } from "react";
-import { func } from "prop-types";
+import { func, string } from "prop-types";
 
 // instruments
 import Styles from "./styles.m.css";
 
 // Components
-import { Consumer } from "hoc/withProfile";
+import { withProfile } from "hoc/withProfile";
 
-export default class Composer extends Component {
+export class Composer extends Component {
     static propTypes = {
-        _createPost: func.isRequired,
+        _createPost:          func.isRequired,
+        avatar:               string.isRequired,
+        currentUserFirstName: string.isRequired,
     };
 
     state = {
@@ -41,23 +43,22 @@ export default class Composer extends Component {
 
     render () {
         const { comment } = this.state;
+        const { avatar, currentUserFirstName } = this.props;
 
         return (
-            <Consumer>
-                {({ avatar, currentUserFirstName }) => (
-                    <section className = { Styles.composer }>
-                        <img src = { avatar } />
-                        <form onSubmit = { this._handleFormSubmit }>
-                            <textarea
-                                placeholder = { `What is in you mind ${currentUserFirstName}` }
-                                value = { comment }
-                                onChange = { this._handleUpdateComment }
-                            />
-                            <input type = 'submit' valuse = 'Post' />
-                        </form>
-                    </section>
-                )}
-            </Consumer>
+            <section className = { Styles.composer }>
+                <img src = { avatar } />
+                <form onSubmit = { this._handleFormSubmit }>
+                    <textarea
+                        placeholder = { `What is in you mind ${currentUserFirstName}` }
+                        value = { comment }
+                        onChange = { this._handleUpdateComment }
+                    />
+                    <input type = 'submit' valuse = 'Post' />
+                </form>
+            </section>
         );
     }
 }
+
+export default withProfile(Composer);
