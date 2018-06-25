@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { string, func } from "prop-types";
 
 // Instruments
-import moment from "moment";
 import Styles from "./styles.m.css";
 
 // Components
@@ -29,6 +28,7 @@ export class Post extends Component {
             avatar,
             currentUserFirstName,
             currentUserLastName,
+            time,
         } = this.props;
 
         return (
@@ -39,7 +39,7 @@ export class Post extends Component {
                 />
                 <img src = { avatar } />
                 <a>{`${currentUserFirstName} ${currentUserLastName}`}</a>
-                <time>{moment().format("LLL")}</time>
+                <time>{time.format("MMMM Do YYYY, h:mm:ss a")}</time>
                 <p>{comment}</p>
             </section>
         );

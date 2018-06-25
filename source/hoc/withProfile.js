@@ -1,6 +1,6 @@
 import React, { Component, createContext } from "react";
 
-import { getDisplayName } from 'instruments';
+import { getDisplayName } from "instruments";
 
 const { Provider, Consumer } = createContext();
 
@@ -21,6 +21,5 @@ const withProfile = (WrappedComponent) => {
 
     return WithPofile;
 };
-
 
 export { Provider, withProfile };
