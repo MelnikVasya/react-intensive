@@ -34,7 +34,19 @@ const api = {
         return post;
     },
 
-    // async deletePost ()
+    async deletePost (id) {
+        const response = await fetch(`${MAIN_URL}/${id}`, {
+            method:  "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization:  TOKEN,
+            },
+        });
+
+        if (response.status !== 204) {
+            throw new Error("Post not deleted");
+        }
+    },
 };
 
 export default api;

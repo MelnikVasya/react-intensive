@@ -12,8 +12,8 @@ import { Provider } from "hoc/withProfile";
 
 const options = {
     avatar,
-    currentUserFirstName: "Vasyl",
-    currentUserLastName:  "Melnyk",
+    currentUserFirstName: "Василий",
+    currentUserLastName:  "Мельник",
 };
 
 @hot(module)

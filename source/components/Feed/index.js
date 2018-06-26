@@ -54,17 +54,30 @@ export default class Feed extends Component {
         }
     };
 
-    _destroyPostAsync = (postId) => {
-        this.setState(({ postsData }) => ({
-            postsData: postsData.filter((post) => post.id !== postId),
-        }));
+    _destroyPostAsync = async (postId) => {
+        try {
+            this._setPostFetchingState(true);
+            await api.deletePost(postId);
+
+            this.setState(({ postsData }) => ({
+                postsData: postsData.filter((post) => post.id !== postId),
+            }));
+        } catch ({ message }) {
+            console.error(message);
+        } finally {
+            this._setPostFetchingState(false);
+        }
     };
 
     render () {
         const { postsData, isSpining } = this.state;
 
         const posts = postsData.map((post) => (
-            <Post { ...post } destroyPost = { this._destroyPost } key = { post.id } />
+            <Post
+                { ...post }
+                destroyPostAsync = { this._destroyPostAsync }
+                key = { post.id }
+            />
         ));
 
         return (
