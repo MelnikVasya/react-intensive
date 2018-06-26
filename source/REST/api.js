@@ -2,7 +2,7 @@ import { MAIN_URL, TOKEN } from "./config";
 
 const api = {
     async fetchPosts () {
-        const response = await fetch(MAIN_URL, {
+        const response = await fetch(`${MAIN_URL}?size=100`, {
             method: "GET",
         });
 
@@ -29,9 +29,9 @@ const api = {
             throw new Error("Post not creacted");
         }
 
-        const { data: post } = await response.json();
+        const { data } = await response.json();
 
-        return post;
+        return data;
     },
 
     async deletePost (id) {
@@ -46,6 +46,24 @@ const api = {
         if (response.status !== 204) {
             throw new Error("Post not deleted");
         }
+    },
+
+    async likePost (id) {
+        const response = await fetch(`${MAIN_URL}/${id}`, {
+            method:  "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization:  TOKEN,
+            },
+        });
+
+        if (response.status !== 200) {
+            throw new Error("Post not liked");
+        }
+
+        const { data } = await response.json();
+
+        return data;
     },
 };
 

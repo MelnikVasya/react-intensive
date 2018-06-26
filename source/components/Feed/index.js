@@ -28,16 +28,12 @@ export class Feed extends Component {
         this._fetchPostsAsync();
 
         socket.on("connect", () => {
-            console.dir("connect");
-
             this.setState({
                 online: true,
             });
         });
 
         socket.on("disconnect", () => {
-            console.dir("disconnect");
-
             this.setState({
                 online: false,
             });
@@ -109,12 +105,30 @@ export class Feed extends Component {
         }
     };
 
+    _likePostAsync = async (postId) => {
+        try {
+            this._setPostFetchingState(true);
+            const likedPost = await api.likePost(postId);
+
+            this.setState(({ postsData }) => ({
+                postsData: postsData.map(
+                    (post) => post.id === likedPost.id ? likedPost : post
+                ),
+            }));
+        } catch ({ message }) {
+            console.error(message);
+        } finally {
+            this._setPostFetchingState(false);
+        }
+    };
+
     render () {
         const { postsData, isSpining, online } = this.state;
 
         const posts = postsData.map((post) => (
             <Post
                 { ...post }
+                _likePostAsync = { this._likePostAsync }
                 destroyPostAsync = { this._destroyPostAsync }
                 key = { post.id }
             />

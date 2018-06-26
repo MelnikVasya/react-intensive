@@ -7,6 +7,7 @@ import Styles from "./styles.m.css";
 import moment from "moment";
 
 // Components
+import Like from "components/Like";
 import { withProfile } from "hoc/withProfile";
 
 export class Post extends Component {
@@ -18,6 +19,7 @@ export class Post extends Component {
         firstName:        string.isRequired,
         id:               string.isRequired,
         lastName:         string.isRequired,
+        _likePostAsync:   func.isRequired,
     };
 
     _handleDestroyPost = () => {
@@ -45,7 +47,15 @@ export class Post extends Component {
         moment.unix(this.props.created).format("MMMM Do YYYY, h:mm:ss a");
 
     render () {
-        const { comment, avatar, firstName, lastName } = this.props;
+        const {
+            comment,
+            avatar,
+            firstName,
+            lastName,
+            _likePostAsync,
+            id,
+            likes,
+        } = this.props;
 
         return (
             <section className = { Styles.post }>
@@ -54,6 +64,7 @@ export class Post extends Component {
                 <a>{`${firstName} ${lastName}`}</a>
                 <time>{this._createdTimeHuman()}</time>
                 <p>{comment}</p>
+                <Like { ...{ _likePostAsync, id, likes } } />
             </section>
         );
     }
