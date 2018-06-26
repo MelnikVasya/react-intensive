@@ -4,6 +4,8 @@ import React, { Component } from "react";
 // Instruments
 import Styles from "./styles.m.css";
 import api from "REST/api";
+import { GROUP_ID } from "REST/config";
+import { socket } from "socket/init";
 
 // Components
 import Composer from "components/Composer";
@@ -11,15 +13,53 @@ import Post from "components/Post";
 import StatusBar from "components/StatusBar";
 import Counter from "components/Counter";
 import Spinner from "components/Spinner";
+import { withProfile } from "hoc/withProfile";
 
-export default class Feed extends Component {
+export class Feed extends Component {
     state = {
         postsData: [],
         isSpining: false,
+        online:    true,
     };
 
     componentDidMount () {
+        const { currentUserFirstName, currentUserLastName } = this.props;
+
         this._fetchPostsAsync();
+
+        socket.on("connect", () => {
+            console.dir("connect");
+
+            this.setState({
+                online: true,
+            });
+        });
+
+        socket.on("disconnect", () => {
+            console.dir("disconnect");
+
+            this.setState({
+                online: false,
+            });
+        });
+
+        socket.emit("join", GROUP_ID);
+
+        socket.on("create", (response) => {
+            const { data: newPost, meta } = JSON.parse(response);
+
+            const isCurrentUser =
+                `${currentUserFirstName}_${currentUserLastName}` ===
+                `${meta.authorFirstName}_${meta.authorLastName}`;
+
+            if (isCurrentUser) {
+                return null;
+            }
+
+            this.setState(({ postsData }) => ({
+                postsData: [newPost, ...postsData],
+            }));
+        });
     }
 
     _setPostFetchingState = (isSpining) => {
@@ -70,7 +110,7 @@ export default class Feed extends Component {
     };
 
     render () {
-        const { postsData, isSpining } = this.state;
+        const { postsData, isSpining, online } = this.state;
 
         const posts = postsData.map((post) => (
             <Post
@@ -82,7 +122,7 @@ export default class Feed extends Component {
 
         return (
             <section className = { Styles.feed }>
-                <StatusBar />
+                <StatusBar online = { online } />
                 <Spinner isSpining = { isSpining } />
                 <Composer _createPostAsync = { this._createPostAsync } />
                 <Counter postCount = { postsData.length } />
@@ -91,3 +131,5 @@ export default class Feed extends Component {
         );
     }
 }
+
+export default withProfile(Feed);
