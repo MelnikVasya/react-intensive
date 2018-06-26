@@ -1,5 +1,7 @@
 // Core
 import React, { Component } from "react";
+import gsap from "gsap";
+import { Transition } from "react-transition-group";
 
 // Instruments
 import Styles from "./styles.m.css";
@@ -54,6 +56,40 @@ export class Feed extends Component {
 
             this.setState(({ postsData }) => ({
                 postsData: [newPost, ...postsData],
+            }));
+        });
+
+        socket.on("like", (response) => {
+            const { data: likedPost, meta } = JSON.parse(response);
+
+            const isCurrentUser =
+                `${currentUserFirstName}_${currentUserLastName}` ===
+                `${meta.authorFirstName}_${meta.authorLastName}`;
+
+            if (isCurrentUser) {
+                return null;
+            }
+
+            this.setState(({ postsData }) => ({
+                postsData: postsData.map(
+                    (post) => post.id === likedPost.id ? likedPost : post
+                ),
+            }));
+        });
+
+        socket.on("remove", (response) => {
+            const { data: removedPost, meta } = JSON.parse(response);
+
+            const isCurrentUser =
+                `${currentUserFirstName}_${currentUserLastName}` ===
+                `${meta.authorFirstName}_${meta.authorLastName}`;
+
+            if (isCurrentUser) {
+                return null;
+            }
+
+            this.setState(({ postsData }) => ({
+                postsData: postsData.filter((post) => post.id !== removedPost.id),
             }));
         });
     }
@@ -122,6 +158,10 @@ export class Feed extends Component {
         }
     };
 
+    _animateComposerAppear = (composer) => {
+        gsap.fromTo(composer, 2, { opacity: 0, y: -50 }, { opacity: 1, y: 0 });
+    };
+
     render () {
         const { postsData, isSpining, online } = this.state;
 
@@ -138,7 +178,13 @@ export class Feed extends Component {
             <section className = { Styles.feed }>
                 <StatusBar online = { online } />
                 <Spinner isSpining = { isSpining } />
-                <Composer _createPostAsync = { this._createPostAsync } />
+                <Transition
+                    appear
+                    in
+                    timeout = { 2000 }
+                    onEnter = { this._animateComposerAppear }>
+                    <Composer _createPostAsync = { this._createPostAsync } />
+                </Transition>
                 <Counter postCount = { postsData.length } />
                 {posts}
             </section>
