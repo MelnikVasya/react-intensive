@@ -27,10 +27,10 @@ export class Feed extends Component {
     constructor () {
         super();
         this.state = {
-            postsData:   [],
-            isSpining:   false,
-            online:      true,
-            showPostman: this._getShowPostman(),
+            postsData:     [],
+            isSpining:     false,
+            online:        true,
+            isShowPostman: this._getIsShowPostman(),
         };
     }
 
@@ -170,39 +170,39 @@ export class Feed extends Component {
         }
     };
 
-    _getShowPostman = () => {
-        const postmanShowIn = localStorage.getItem("postmanShowIn");
+    _getIsShowPostman = () => {
+        const postmanShowIn = localStorage.getItem("postmanAppearedIn");
         const postmanShowInDate = moment.unix(parseInt(postmanShowIn, 10));
 
         if (!postmanShowInDate.isValid()) {
             return true;
         }
 
-        return moment().diff(postmanShowInDate, "minutes") > 2;
+        return moment().diff(postmanShowInDate, "days") > 1;
     };
 
-    _setShowPostmanIn = () => {
-        localStorage.setItem("postmanShowIn", moment().unix());
+    _setPostmanAppearedIn = () => {
+        localStorage.setItem("postmanAppearedIn", moment().unix());
     };
 
     _animatePostmanAppear = (postman) => {
-        gsap.fromTo(postman, 2, { opacity: 0, x: 250 }, { opacity: 1, x: 0 });
+        gsap.fromTo(postman, 2, { opacity: 0, x: 0 }, { opacity: 1, x: -280 });
     };
 
     _animatePostmanDisappear = (postman) => {
-        gsap.fromTo(postman, 2, { opacity: 1, x: 0 }, { opacity: 0, x: 250 });
+        gsap.fromTo(postman, 2, { opacity: 1, x: -280 }, { opacity: 0, x: 0 });
     };
 
-    _animatePostmanEndAppear = () => {
-        this._setShowPostmanIn();
+    _postmanAppeared = () => {
+        this._setPostmanAppearedIn();
 
         setTimeout(() => {
-            this.setState({ showPostman: false });
+            this.setState({ isShowPostman: false });
         }, 5000);
     };
 
     render () {
-        const { postsData, isSpining, online, showPostman } = this.state;
+        const { postsData, isSpining, online, isShowPostman } = this.state;
 
         const posts = postsData.map((post) => (
             <CSSTransition
@@ -231,10 +231,10 @@ export class Feed extends Component {
                 <TransitionGroup>{posts}</TransitionGroup>
                 <Transition
                     appear
-                    in = { showPostman }
+                    in = { isShowPostman }
                     timeout = { 2000 }
                     onEnter = { this._animatePostmanAppear }
-                    onEntered = { this._animatePostmanEndAppear }
+                    onEntered = { this._postmanAppeared }
                     onExit = { this._animatePostmanDisappear }>
                     <Postman />
                 </Transition>

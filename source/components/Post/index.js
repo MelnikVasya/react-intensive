@@ -12,6 +12,7 @@ import { withProfile } from "hoc/withProfile";
 
 export class Post extends Component {
     static propTypes = {
+        _likePostAsync:   func.isRequired,
         avatar:           string.isRequired,
         comment:          string.isRequired,
         created:          number.isRequired,
@@ -19,7 +20,6 @@ export class Post extends Component {
         firstName:        string.isRequired,
         id:               string.isRequired,
         lastName:         string.isRequired,
-        _likePostAsync:   func.isRequired,
     };
 
     _handleDestroyPost = () => {
