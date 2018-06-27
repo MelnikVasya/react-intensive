@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Composer component: should have core class methods should render valid markup depending on passed props snapshot should mathc 1`] = `"<img src=\\"https://www.avatar.com\\"><form><textarea placeholder=\\"What is in you mind Vasya\\"></textarea><input type=\\"submit\\" valuse=\\"Post\\"></form>"`;

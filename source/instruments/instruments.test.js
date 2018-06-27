@@ -1,4 +1,4 @@
-import { sum, delay, getUniqueID, getFullApiUrl } from './';
+import { sum, delay, getUniqueID, getFullApiUrl } from "./";
 
 describe("instruments module:", () => {
     describe("sum function:", () => {
@@ -34,7 +34,6 @@ describe("instruments module:", () => {
         });
     });
 
-
     describe("getUniqueID function:", () => {
         test("should throw if length not number", () => {
             const result = () => getUniqueID("str");
@@ -61,15 +60,19 @@ describe("instruments module:", () => {
         });
 
         test("should throw if api is not string", () => {
-            const result = () => getFullApiUrl(1, 'str');
+            const result = () => getFullApiUrl(1, "str");
 
-            expect(result).toThrow("'api' and 'GROUP_ID' arguments passed should be a string!");
+            expect(result).toThrow(
+                "'api' and 'GROUP_ID' arguments passed should be a string!"
+            );
         });
 
         test("shoult throw if GROUP_ID is not string", () => {
-            const result = () => getFullApiUrl('api', 1);
+            const result = () => getFullApiUrl("api", 1);
 
-            expect(result).toThrow("'api' and 'GROUP_ID' arguments passed should be a string!");
+            expect(result).toThrow(
+                "'api' and 'GROUP_ID' arguments passed should be a string!"
+            );
         });
 
         test("shoult return correct full api url", () => {
